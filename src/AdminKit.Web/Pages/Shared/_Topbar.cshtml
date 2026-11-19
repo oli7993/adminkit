@@ -1,0 +1,46 @@
+@*
+    The search box posts to /Orders with a GET, so pressing Enter works with
+    JavaScript switched off and the result is a shareable URL.
+*@
+<header class="topbar">
+    <button type="button"
+            class="btn btn-ghost btn-icon hamburger"
+            data-sidebar-toggle
+            aria-expanded="false"
+            aria-label="Open navigation">
+        <partial name="_Icon" model="@("menu")" />
+    </button>
+
+    <button type="button"
+            class="btn btn-ghost btn-icon"
+            data-sidebar-toggle
+            aria-expanded="true"
+            aria-label="Collapse sidebar">
+        <partial name="_Icon" model="@("panel")" />
+    </button>
+
+    <form class="topbar-search" method="get" action="/Orders" role="search">
+        <div class="searchbox">
+            <partial name="_Icon" model="@("search")" />
+            <input class="input"
+                   type="search"
+                   name="q"
+                   placeholder="Search orders, customers, references"
+                   aria-label="Search orders" />
+        </div>
+    </form>
+
+    <div class="topbar-actions">
+        <button type="button"
+                class="btn btn-ghost btn-icon"
+                data-theme-toggle
+                role="switch"
+                aria-checked="false"
+                aria-label="Dark mode">
+            <partial name="_Icon" model="@("moon")" />
+        </button>
+
+        <span class="avatar" title="Signed in as Dana Albu" aria-hidden="true">DA</span>
+        <span class="visually-hidden">Signed in as Dana Albu</span>
+    </div>
+</header>

@@ -1,0 +1,217 @@
+@page
+@model AdminKit.Web.Pages.Orders.IndexModel
+@{
+    ViewData["Title"] = "Orders";
+    var statuses = Enum.GetValues<OrderStatus>();
+}
+
+<nav aria-label="Breadcrumb">
+    <ol class="breadcrumbs">
+        <li><a href="/">Dashboard</a></li>
+        <li aria-current="page">Orders</li>
+    </ol>
+</nav>
+
+<div class="page-head">
+    <div class="page-head-text">
+        <h1>Orders</h1>
+        <p>@Model.Result.TotalCount.ToString("N0") orders match the current view.</p>
+    </div>
+    <div class="page-head-actions">
+        <a class="btn" href="/Orders?status=Pending">Show pending</a>
+        @* Exports the filtered view, not the whole table - see OnGetExport. *@
+        <a class="btn btn-primary"
+           asp-page-handler="Export"
+           asp-all-route-data="Model.RouteValues()">
+            <partial name="_Icon" model="@("download")" />
+            Export CSV
+        </a>
+    </div>
+</div>
+
+<section class="card">
+    @* GET form: filtering is a navigation, not a mutation. Works with JS off. *@
+    <form class="filters" method="get" data-autosubmit>
+        <div class="field filters-grow">
+            <label class="field-label" for="q">Search</label>
+            <div class="searchbox">
+                <partial name="_Icon" model="@("search")" />
+                <input class="input"
+                       type="search"
+                       id="q"
+                       name="q"
+                       value="@Model.Search"
+                       placeholder="Reference, customer or email" />
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="field-label" for="status">Status</label>
+            <select class="select" id="status" name="status">
+                <option value="">All statuses</option>
+                @foreach (var status in statuses)
+                {
+                    <option value="@status" selected="@(Model.Status == status)">@status.Label()</option>
+                }
+            </select>
+        </div>
+
+        @if (Model.Sort != "date_desc")
+        {
+            <input type="hidden" name="sort" value="@Model.Sort" />
+        }
+
+        <div class="filters-end">
+            <button type="submit" class="btn" data-nojs-only>Apply</button>
+            @if (Model.HasFilters)
+            {
+                <a class="btn btn-ghost" href="@Model.ClearAll()">Clear all</a>
+            }
+        </div>
+    </form>
+
+    @if (Model.HasFilters)
+    {
+        <div class="filters" style="padding-block: var(--s-3);">
+            <div class="chip-row">
+                <span class="muted" style="font-size: var(--fs-xs);">Filtered by</span>
+                @if (!string.IsNullOrWhiteSpace(Model.Search))
+                {
+                    <a class="chip" href="@Model.WithoutSearch()" title="Remove search filter">
+                        Search: @Model.Search <span class="x" aria-hidden="true">&times;</span>
+                    </a>
+                }
+                @if (Model.Status is not null)
+                {
+                    <a class="chip" href="@Model.WithoutStatus()" title="Remove status filter">
+                        Status: @Model.Status.Value.Label() <span class="x" aria-hidden="true">&times;</span>
+                    </a>
+                }
+            </div>
+        </div>
+    }
+
+    @if (Model.Result.TotalCount == 0)
+    {
+        <div class="empty">
+            <span class="empty-icon"><partial name="_Icon" model="@("search")" /></span>
+            <h2>No orders match those filters</h2>
+            <p>Try a different reference or customer name, or clear the filters to see all orders again.</p>
+            <a class="btn btn-primary" href="@Model.ClearAll()">Clear filters</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table class="table">
+                <caption class="visually-hidden">
+                    Orders, sorted. Column headers are links that change the sort order.
+                </caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Reference</th>
+                        <th scope="col" aria-sort="@(Model.SortState("customer") == "none" ? "none" : Model.SortState("customer") == "asc" ? "ascending" : "descending")">
+                            <a class="th-sort" href="@Model.SortUrl("customer")" data-active="@(Model.SortState("customer") != "none")">
+                                Customer <span class="arrow" aria-hidden="true">@(Model.SortState("customer") == "asc" ? "↑" : "↓")</span>
+                            </a>
+                        </th>
+                        <th scope="col" aria-sort="@(Model.SortState("date") == "none" ? "none" : Model.SortState("date") == "asc" ? "ascending" : "descending")">
+                            <a class="th-sort" href="@Model.SortUrl("date")" data-active="@(Model.SortState("date") != "none")">
+                                Placed <span class="arrow" aria-hidden="true">@(Model.SortState("date") == "asc" ? "↑" : "↓")</span>
+                            </a>
+                        </th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="right" aria-sort="@(Model.SortState("amount") == "none" ? "none" : Model.SortState("amount") == "asc" ? "ascending" : "descending")">
+                            <a class="th-sort" href="@Model.SortUrl("amount")" data-active="@(Model.SortState("amount") != "none")">
+                                Amount <span class="arrow" aria-hidden="true">@(Model.SortState("amount") == "asc" ? "↑" : "↓")</span>
+                            </a>
+                        </th>
+                        <th scope="col" class="right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model.Result.Items)
+                    {
+                        var next = AdminKit.Web.Pages.Orders.IndexModel.NextStage(order.Status);
+
+                        <tr>
+                            <td data-label="Reference">
+                                <a class="cell-primary" href="/Orders/Edit/@order.Id">@order.Reference</a>
+                                <div class="cell-sub">@order.ItemCount items</div>
+                            </td>
+                            <td data-label="Customer">
+                                <div class="cell-primary">@order.CustomerName</div>
+                                <div class="cell-sub">@order.CustomerEmail</div>
+                            </td>
+                            <td data-label="Placed" class="nowrap">@order.PlacedOn.ToString("d MMM yyyy")</td>
+                            <td data-label="Status"><partial name="_StatusBadge" model="order.Status" /></td>
+                            <td data-label="Amount" class="right amount">@order.Amount.ToString("C2")</td>
+                            <td data-label="Actions">
+                                <div class="row-actions">
+                                    @* One click moves an order along the pipeline - no drill-in, no modal. *@
+                                    @if (next is not null)
+                                    {
+                                        <form method="post"
+                                              asp-page-handler="Advance"
+                                              asp-all-route-data="Model.RouteValues()"
+                                              asp-route-id="@order.Id">
+                                            <button type="submit" class="btn btn-sm" title="Mark as @next.Value.Label().ToLowerInvariant()">
+                                                <partial name="_Icon" model="@("check")" />
+                                                <span>Mark @next.Value.Label().ToLowerInvariant()</span>
+                                            </button>
+                                        </form>
+                                    }
+                                    <a class="btn btn-sm btn-icon" href="/Orders/Edit/@order.Id" title="Edit @order.Reference">
+                                        <partial name="_Icon" model="@("edit")" />
+                                        <span class="visually-hidden">Edit @order.Reference</span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pager">
+            <span>
+                Showing <strong class="num">@Model.Result.FirstRow&ndash;@Model.Result.LastRow</strong>
+                of <strong class="num">@Model.Result.TotalCount.ToString("N0")</strong>
+            </span>
+
+            <div class="pager-nav">
+                @if (Model.Result.HasPrevious)
+                {
+                    <a class="btn btn-sm" href="@Model.PageUrl(Model.Result.Page - 1)" rel="prev">
+                        <partial name="_Icon" model="@("arrow-left")" />
+                        Previous
+                    </a>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-sm" disabled>
+                        <partial name="_Icon" model="@("arrow-left")" />
+                        Previous
+                    </button>
+                }
+
+                <span class="muted">Page @Model.Result.Page of @Model.Result.TotalPages</span>
+
+                @if (Model.Result.HasNext)
+                {
+                    <a class="btn btn-sm" href="@Model.PageUrl(Model.Result.Page + 1)" rel="next">
+                        Next
+                        <partial name="_Icon" model="@("arrow-right")" />
+                    </a>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-sm" disabled>
+                        Next
+                        <partial name="_Icon" model="@("arrow-right")" />
+                    </button>
+                }
+            </div>
+        </div>
+    }
+</section>

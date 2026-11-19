@@ -1,0 +1,181 @@
+/* ---------------------------------------------------------------------------
+   Design tokens. Every colour, space and radius in the app resolves here.
+   Light values live on bare :root; the dark set is declared twice on purpose -
+   once for the OS setting, once for the in-app toggle - so the toggle wins in
+   both directions.
+   --------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --surface-2: #f1f0ec;
+  --surface-sunken: #efeee9;
+  --hover: rgba(11, 11, 11, 0.045);
+  --pressed: rgba(11, 11, 11, 0.08);
+  --overlay: rgba(11, 11, 11, 0.45);
+
+  /* Ink */
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --ink-muted: #898781;
+  --ink-on-accent: #ffffff;
+
+  /* Lines */
+  --border: rgba(11, 11, 11, 0.12);
+  --border-strong: #c3c2b7;
+  --grid: #e1e0d9;
+
+  /* Accent */
+  --accent: #2a78d6;
+  --accent-hover: #256abf;
+  --accent-soft: #e4eefc;
+  --accent-ink: #1c5cab;
+
+  /* Status - always paired with a text label, never colour alone */
+  --good: #0ca30c;
+  --good-ink: #006300;
+  --good-soft: #e3f5e3;
+  --warning: #fab219;
+  --warning-ink: #7a5300;
+  --warning-soft: #fdf1d8;
+  --serious: #ec835a;
+  --serious-ink: #8a3d1c;
+  --serious-soft: #fceae1;
+  --critical: #d03b3b;
+  --critical-ink: #9c2020;
+  --critical-soft: #fae4e4;
+
+  /* Chart ramp - ordinal blue, validated light->dark (see DESIGN-NOTES.md) */
+  --c-1: #86b6ef;
+  --c-2: #5598e7;
+  --c-3: #2a78d6;
+  --c-4: #1c5cab;
+  --c-off: #898781;
+
+  /* Spacing - 4px scale */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+
+  /* Radius */
+  --r-sm: 6px;
+  --r: 10px;
+  --r-lg: 14px;
+  --r-pill: 999px;
+
+  /* Elevation */
+  --shadow-1: 0 1px 2px rgba(11, 11, 11, 0.06);
+  --shadow-2: 0 4px 16px rgba(11, 11, 11, 0.08);
+  --shadow-3: 0 16px 40px rgba(11, 11, 11, 0.18);
+
+  /* Type */
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.8125rem;
+  --fs-base: 0.9375rem;
+  --fs-lg: 1.0625rem;
+  --fs-xl: 1.375rem;
+  --fs-2xl: 1.875rem;
+
+  /* Shell */
+  --sidebar-w: 244px;
+  --sidebar-w-min: 68px;
+  --topbar-h: 60px;
+  --speed: 160ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --surface-2: #232321;
+    --surface-sunken: #141413;
+    --hover: rgba(255, 255, 255, 0.06);
+    --pressed: rgba(255, 255, 255, 0.11);
+    --overlay: rgba(0, 0, 0, 0.6);
+
+    --ink: #ffffff;
+    --ink-2: #c3c2b7;
+    --ink-muted: #898781;
+
+    --border: rgba(255, 255, 255, 0.12);
+    --border-strong: #383835;
+    --grid: #2c2c2a;
+
+    --accent: #3987e5;
+    --accent-hover: #5598e7;
+    --accent-soft: #16263a;
+    --accent-ink: #9ec5f4;
+
+    --good-ink: #0ca30c;
+    --good-soft: #102a10;
+    --warning-ink: #fab219;
+    --warning-soft: #30250c;
+    --serious-ink: #ec835a;
+    --serious-soft: #331d13;
+    --critical-ink: #e66767;
+    --critical-soft: #331616;
+
+    --c-1: #b7d3f6;
+    --c-2: #86b6ef;
+    --c-3: #3987e5;
+    --c-4: #1c5cab;
+
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shadow-2: 0 4px 16px rgba(0, 0, 0, 0.45);
+    --shadow-3: 0 16px 40px rgba(0, 0, 0, 0.6);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --page: #0d0d0d;
+  --surface: #1a1a19;
+  --surface-2: #232321;
+  --surface-sunken: #141413;
+  --hover: rgba(255, 255, 255, 0.06);
+  --pressed: rgba(255, 255, 255, 0.11);
+  --overlay: rgba(0, 0, 0, 0.6);
+
+  --ink: #ffffff;
+  --ink-2: #c3c2b7;
+  --ink-muted: #898781;
+
+  --border: rgba(255, 255, 255, 0.12);
+  --border-strong: #383835;
+  --grid: #2c2c2a;
+
+  --accent: #3987e5;
+  --accent-hover: #5598e7;
+  --accent-soft: #16263a;
+  --accent-ink: #9ec5f4;
+
+  --good-ink: #0ca30c;
+  --good-soft: #102a10;
+  --warning-ink: #fab219;
+  --warning-soft: #30250c;
+  --serious-ink: #ec835a;
+  --serious-soft: #331d13;
+  --critical-ink: #e66767;
+  --critical-soft: #331616;
+
+  --c-1: #b7d3f6;
+  --c-2: #86b6ef;
+  --c-3: #3987e5;
+  --c-4: #1c5cab;
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-2: 0 4px 16px rgba(0, 0, 0, 0.45);
+  --shadow-3: 0 16px 40px rgba(0, 0, 0, 0.6);
+}

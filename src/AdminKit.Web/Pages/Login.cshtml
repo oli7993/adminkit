@@ -1,0 +1,40 @@
+@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Sign in";
+    ViewData["HideChrome"] = true;
+}
+
+<main class="auth">
+    <section class="card auth-card">
+        <div class="card-body">
+            <div class="auth-brand">
+                <span class="brand-mark" aria-hidden="true">AK</span>
+                <span class="brand-name">AdminKit</span>
+            </div>
+
+            <h1>Sign in</h1>
+            <p class="subtle" style="margin-bottom: var(--s-5);">
+                This is a UI demo - any email and password will get you in.
+            </p>
+
+            <form method="post" class="stack" novalidate>
+                <div class="field">
+                    <label class="field-label" for="email">Email</label>
+                    <input class="input" id="email" name="email" type="email" autocomplete="username" value="dana@northwindsupply.com" />
+                </div>
+
+                <div class="field">
+                    <label class="field-label" for="password">Password</label>
+                    <input class="input" id="password" name="password" type="password" autocomplete="current-password" value="demo" />
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="justify-content: center;">Sign in</button>
+            </form>
+        </div>
+    </section>
+
+    <p class="auth-foot muted">
+        <a href="/">Skip and open the dashboard</a>
+    </p>
+</main>

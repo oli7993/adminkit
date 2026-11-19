@@ -1,0 +1,53 @@
+@{
+    var hideChrome = ViewData["HideChrome"] as bool? ?? false;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] &middot; AdminKit</title>
+
+    @* Applied before first paint so a dark-mode reload never flashes white. *@
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem("adminkit.theme");
+                if (saved) document.documentElement.dataset.theme = saved;
+            } catch (e) { }
+        })();
+    </script>
+
+    <link rel="stylesheet" href="~/css/tokens.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/base.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/components.css" asp-append-version="true" />
+</head>
+<body>
+    @if (hideChrome)
+    {
+        @RenderBody()
+    }
+    else
+    {
+        <a class="skip-link" href="#main">Skip to content</a>
+
+        <div class="shell">
+            <partial name="_Sidebar" />
+            <div class="sidebar-scrim" aria-hidden="true"></div>
+
+            <div class="main">
+                <partial name="_Topbar" />
+                <main id="main" class="content" tabindex="-1">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
+
+        <partial name="_Toast" />
+    }
+
+    <script src="~/js/app.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

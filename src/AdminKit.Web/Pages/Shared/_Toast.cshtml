@@ -1,0 +1,23 @@
+@{
+    var message = TempData["Toast"] as string;
+    var title = TempData["ToastTitle"] as string ?? "Saved";
+}
+
+@* Rendered server-side after a redirect, so confirmation survives a full page load. *@
+<div class="toast-region" role="status" aria-live="polite">
+    @if (!string.IsNullOrWhiteSpace(message))
+    {
+        <div class="toast">
+            <span style="color: var(--good-ink); margin-top: 2px;">
+                <partial name="_Icon" model="@("check")" />
+            </span>
+            <div class="toast-text">
+                <div class="toast-title">@title</div>
+                <div class="subtle">@message</div>
+            </div>
+            <button type="button" class="btn btn-ghost btn-icon btn-sm close" data-toast-close aria-label="Dismiss">
+                <partial name="_Icon" model="@("x")" />
+            </button>
+        </div>
+    }
+</div>

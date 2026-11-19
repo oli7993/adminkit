@@ -1,0 +1,92 @@
+/* Reset + element defaults */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: var(--fs-base);
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--page);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, p, figure, blockquote, dl, dd { margin: 0; }
+
+h1 { font-size: var(--fs-xl); line-height: 1.25; font-weight: 650; letter-spacing: -0.01em; }
+h2 { font-size: var(--fs-lg); line-height: 1.3; font-weight: 620; }
+h3 { font-size: var(--fs-base); line-height: 1.35; font-weight: 620; }
+
+ul, ol { margin: 0; padding: 0; list-style: none; }
+
+a {
+  color: var(--accent-ink);
+  text-decoration-color: color-mix(in srgb, var(--accent-ink) 35%, transparent);
+  text-underline-offset: 2px;
+}
+
+a:hover { text-decoration-color: currentColor; }
+
+img, svg { display: block; max-width: 100%; }
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
+/* One focus treatment everywhere, keyboard only. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+:focus:not(:focus-visible) { outline: none; }
+
+::selection { background: var(--accent-soft); color: var(--ink); }
+
+.skip-link {
+  position: absolute;
+  left: var(--s-3);
+  top: calc(-1 * var(--s-8));
+  z-index: 100;
+  padding: var(--s-2) var(--s-4);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow-2);
+  text-decoration: none;
+  color: var(--ink);
+  transition: top var(--speed) ease;
+}
+
+.skip-link:focus { top: var(--s-3); }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.muted { color: var(--ink-muted); }
+.subtle { color: var(--ink-2); }
+.num { font-variant-numeric: tabular-nums; }
+.nowrap { white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+    scroll-behavior: auto;
+  }
+}

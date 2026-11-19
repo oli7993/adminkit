@@ -1,0 +1,89 @@
+@page
+@model AdminKit.Web.Pages.Customers.IndexModel
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<nav aria-label="Breadcrumb">
+    <ol class="breadcrumbs">
+        <li><a href="/">Dashboard</a></li>
+        <li aria-current="page">Customers</li>
+    </ol>
+</nav>
+
+<div class="page-head">
+    <div class="page-head-text">
+        <h1>Customers</h1>
+        <p>@Model.Rows.Count accounts, ordered by lifetime value.</p>
+    </div>
+</div>
+
+<section class="card">
+    <form class="filters" method="get" data-autosubmit>
+        <div class="field filters-grow">
+            <label class="field-label" for="q">Search</label>
+            <div class="searchbox">
+                <partial name="_Icon" model="@("search")" />
+                <input class="input" type="search" id="q" name="q" value="@Model.Search" placeholder="Name, company or city" />
+            </div>
+        </div>
+        <div class="filters-end">
+            <button type="submit" class="btn" data-nojs-only>Apply</button>
+            @if (!string.IsNullOrWhiteSpace(Model.Search))
+            {
+                <a class="btn btn-ghost" href="/Customers">Clear</a>
+            }
+        </div>
+    </form>
+
+    @if (Model.Rows.Count == 0)
+    {
+        <div class="empty">
+            <span class="empty-icon"><partial name="_Icon" model="@("customers")" /></span>
+            <h2>No customers found</h2>
+            <p>No account matches &ldquo;@Model.Search&rdquo;. Try part of a company name or a city.</p>
+            <a class="btn btn-primary" href="/Customers">Clear search</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Location</th>
+                        <th scope="col">Last order</th>
+                        <th scope="col" class="right">Orders</th>
+                        <th scope="col" class="right">Lifetime value</th>
+                        <th scope="col" class="right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.Rows)
+                    {
+                        <tr>
+                            <td data-label="Customer">
+                                <div class="cell-primary">@row.Customer.Name</div>
+                                <div class="cell-sub">@row.Customer.Company</div>
+                            </td>
+                            <td data-label="Location">@row.Customer.City</td>
+                            <td data-label="Last order" class="nowrap">
+                                @(row.LastOrder?.ToString("d MMM yyyy") ?? "-")
+                            </td>
+                            <td data-label="Orders" class="right num">@row.Orders</td>
+                            <td data-label="Lifetime value" class="right amount">@row.Spent.ToString("C0")</td>
+                            <td data-label="Actions">
+                                <div class="row-actions">
+                                    <a class="btn btn-sm" href="/Orders?q=@Uri.EscapeDataString(row.Customer.Name)">
+                                        View orders
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

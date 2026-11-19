@@ -1,0 +1,57 @@
+@{
+    var path = ViewContext.HttpContext.Request.Path.Value ?? "/";
+
+    bool Active(string prefix) => prefix == "/"
+        ? string.Equals(path, "/", StringComparison.OrdinalIgnoreCase)
+        : path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
+
+    var links = new (string Href, string Icon, string Text)[]
+    {
+        ("/", "dashboard", "Dashboard"),
+        ("/Orders", "orders", "Orders"),
+        ("/Customers", "customers", "Customers")
+    };
+}
+
+<nav class="sidebar" aria-label="Main">
+    <a class="brand" href="/">
+        <span class="brand-mark" aria-hidden="true">AK</span>
+        <span class="brand-name">AdminKit</span>
+    </a>
+
+    <p class="nav-label" id="nav-manage">Manage</p>
+    <ul class="nav-group" aria-labelledby="nav-manage">
+        @foreach (var link in links)
+        {
+            <li>
+                <a class="nav-item"
+                   href="@link.Href"
+                   title="@link.Text"
+                   aria-current="@(Active(link.Href) ? "page" : null)">
+                    <partial name="_Icon" model="@link.Icon" />
+                    <span class="nav-text">@link.Text</span>
+                </a>
+            </li>
+        }
+    </ul>
+
+    <div class="sidebar-foot">
+        <ul class="nav-group">
+            <li>
+                <a class="nav-item"
+                   href="/Settings"
+                   title="Settings"
+                   aria-current="@(Active("/Settings") ? "page" : null)">
+                    <partial name="_Icon" model="@("settings")" />
+                    <span class="nav-text">Settings</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-item" href="/Login" title="Sign out">
+                    <partial name="_Icon" model="@("arrow-right")" />
+                    <span class="nav-text">Sign out</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

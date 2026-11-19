@@ -1,0 +1,29 @@
+@page
+@model ErrorModel
+@{
+    ViewData["Title"] = "Something went wrong";
+}
+
+<div class="page-head">
+    <div class="page-head-text">
+        <h1>Something went wrong</h1>
+        <p>The page could not be loaded. Nothing you were working on was saved.</p>
+    </div>
+</div>
+
+<section class="card" style="max-width: 560px;">
+    <div class="empty">
+        <span class="empty-icon"><partial name="_Icon" model="@("alert")" /></span>
+        <h2>We hit an unexpected error</h2>
+        <p>Try again, or go back to the dashboard and pick up from there.</p>
+
+        @if (Model.ShowRequestId)
+        {
+            <p class="muted" style="font-size: var(--fs-sm);">
+                Reference: <code>@Model.RequestId</code>
+            </p>
+        }
+
+        <a class="btn btn-primary" href="/">Back to dashboard</a>
+    </div>
+</section>

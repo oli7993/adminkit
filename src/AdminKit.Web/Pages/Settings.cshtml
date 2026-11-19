@@ -1,0 +1,156 @@
+@page
+@model SettingsModel
+@{
+    ViewData["Title"] = "Settings";
+    var errors = ViewData.ModelState.Where(e => e.Value?.Errors.Count > 0).ToList();
+}
+
+<nav aria-label="Breadcrumb">
+    <ol class="breadcrumbs">
+        <li><a href="/">Dashboard</a></li>
+        <li aria-current="page">Settings</li>
+    </ol>
+</nav>
+
+<div class="page-head">
+    <div class="page-head-text">
+        <h1>Settings</h1>
+        <p>Preferences for your account and how lists are displayed.</p>
+    </div>
+</div>
+
+<form method="post" novalidate>
+    <section class="card" style="max-width: 760px;">
+        <div class="card-body">
+            @if (errors.Count > 0)
+            {
+                <div class="error-summary" role="alert" style="margin-bottom: var(--s-5);">
+                    <h2>Check these fields</h2>
+                    <ul>
+                        @foreach (var error in errors.SelectMany(e => e.Value!.Errors))
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <div class="form-section">
+                <div class="form-section-head">
+                    <h2>Profile</h2>
+                    <p>How you appear to the rest of the team.</p>
+                </div>
+
+                <div class="form-grid">
+                    <div class="field">
+                        <label class="field-label" for="DisplayName">Display name</label>
+                        <input class="input @(Model.HasError("DisplayName") ? "input-error" : "")"
+                               id="DisplayName"
+                               name="Input.DisplayName"
+                               value="@Model.Input.DisplayName"
+                               aria-describedby="DisplayName-error"
+                               aria-invalid="@(Model.HasError("DisplayName") ? "true" : null)" />
+                        <p class="field-error" id="DisplayName-error">@Model.ErrorsFor("DisplayName").FirstOrDefault()</p>
+                    </div>
+
+                    <div class="field">
+                        <label class="field-label" for="Email">Email</label>
+                        <input class="input @(Model.HasError("Email") ? "input-error" : "")"
+                               id="Email"
+                               name="Input.Email"
+                               type="email"
+                               value="@Model.Input.Email"
+                               aria-describedby="Email-error"
+                               aria-invalid="@(Model.HasError("Email") ? "true" : null)" />
+                        <p class="field-error" id="Email-error">@Model.ErrorsFor("Email").FirstOrDefault()</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-head">
+                    <h2>Display</h2>
+                    <p>Applies to every list and table in the panel.</p>
+                </div>
+
+                <div class="form-grid">
+                    <div class="field">
+                        <label class="field-label" for="TimeZone">Time zone</label>
+                        <select class="select" id="TimeZone" name="Input.TimeZone">
+                            @foreach (var zone in new[] { "Europe/London", "Europe/Bucharest", "Europe/Berlin", "UTC" })
+                            {
+                                <option value="@zone" selected="@(Model.Input.TimeZone == zone)">@zone</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label class="field-label" for="RowsPerPage">Rows per page</label>
+                        <input class="input @(Model.HasError("RowsPerPage") ? "input-error" : "")"
+                               id="RowsPerPage"
+                               name="Input.RowsPerPage"
+                               type="number"
+                               min="1"
+                               max="200"
+                               value="@Model.Input.RowsPerPage"
+                               aria-describedby="RowsPerPage-error"
+                               aria-invalid="@(Model.HasError("RowsPerPage") ? "true" : null)" />
+                        <p class="field-error" id="RowsPerPage-error">@Model.ErrorsFor("RowsPerPage").FirstOrDefault()</p>
+                    </div>
+                </div>
+
+                <div class="switch-row" style="margin-top: var(--s-4);">
+                    <div class="switch-text">
+                        <strong>Dark mode</strong>
+                        <p>Follows your system setting until you change it here.</p>
+                    </div>
+                    <button type="button" class="switch" data-theme-toggle role="switch" aria-checked="false">
+                        <span class="visually-hidden">Dark mode</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-head">
+                    <h2>Notifications</h2>
+                    <p>Email only. Nothing is actually sent in this demo.</p>
+                </div>
+
+                <div class="switch-row">
+                    <div class="switch-text">
+                        <label class="field-label" for="EmailOnNewOrder">New order received</label>
+                        <p>One email per order, sent immediately.</p>
+                    </div>
+                    <input class="switch-input"
+                           type="checkbox"
+                           id="EmailOnNewOrder"
+                           name="Input.EmailOnNewOrder"
+                           value="true"
+                           checked="@Model.Input.EmailOnNewOrder" />
+                </div>
+
+                <div class="switch-row">
+                    <div class="switch-text">
+                        <label class="field-label" for="WeeklyDigest">Weekly digest</label>
+                        <p>Monday morning summary of the week before.</p>
+                    </div>
+                    <input class="switch-input"
+                           type="checkbox"
+                           id="WeeklyDigest"
+                           name="Input.WeeklyDigest"
+                           value="true"
+                           checked="@Model.Input.WeeklyDigest" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a class="btn btn-ghost" href="/">Cancel</a>
+            <span class="spacer"></span>
+            <button type="submit" class="btn btn-primary">
+                <partial name="_Icon" model="@("check")" />
+                Save settings
+            </button>
+        </div>
+    </section>
+</form>

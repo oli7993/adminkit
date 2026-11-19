@@ -1,0 +1,241 @@
+/* Application shell: fixed sidebar + sticky topbar + scrolling main. */
+
+.shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.shell[data-sidebar="collapsed"] { grid-template-columns: var(--sidebar-w-min) minmax(0, 1fr); }
+
+/* ---- Sidebar ---- */
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-4) var(--s-3);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-1) var(--s-2) var(--s-4);
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand-mark {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-sm);
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  letter-spacing: 0.02em;
+}
+
+.brand-name { font-weight: 640; letter-spacing: -0.01em; }
+
+.nav-group { display: flex; flex-direction: column; gap: 2px; }
+
+.nav-label {
+  padding: var(--s-4) var(--s-2) var(--s-1);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-2);
+  border-radius: var(--r-sm);
+  color: var(--ink-2);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--speed) ease, color var(--speed) ease;
+}
+
+.nav-item:hover { background: var(--hover); color: var(--ink); }
+.nav-item .icon { flex: 0 0 auto; color: var(--ink-muted); }
+
+.nav-item[aria-current="page"] {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-weight: 560;
+}
+
+.nav-item[aria-current="page"] .icon { color: var(--accent-ink); }
+
+.sidebar-foot {
+  margin-top: auto;
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--border);
+}
+
+/* Collapsed rail: labels out, icons centred, names kept in the title attribute. */
+.shell[data-sidebar="collapsed"] .nav-text,
+.shell[data-sidebar="collapsed"] .brand-name,
+.shell[data-sidebar="collapsed"] .nav-label { display: none; }
+
+.shell[data-sidebar="collapsed"] .nav-item,
+.shell[data-sidebar="collapsed"] .brand { justify-content: center; padding-inline: 0; }
+
+/* ---- Topbar ---- */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  height: var(--topbar-h);
+  padding: 0 var(--s-5);
+  background: color-mix(in srgb, var(--page) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar-search { flex: 1 1 420px; max-width: 420px; }
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-left: auto;
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: var(--fs-xs);
+  font-weight: 640;
+  color: var(--ink-2);
+}
+
+/* ---- Main ---- */
+
+.main { display: flex; flex-direction: column; min-width: 0; }
+
+.content {
+  padding: var(--s-5);
+  max-width: 1320px;
+  width: 100%;
+}
+
+.page-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--s-4);
+  margin-bottom: var(--s-5);
+}
+
+.page-head-text { min-width: 0; }
+.page-head p { color: var(--ink-2); font-size: var(--fs-sm); margin-top: 2px; }
+
+.page-head-actions { display: flex; gap: var(--s-2); margin-left: auto; }
+
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  margin-bottom: var(--s-2);
+  font-size: var(--fs-sm);
+  color: var(--ink-muted);
+}
+
+.breadcrumbs li { display: flex; align-items: center; }
+.breadcrumbs a { color: var(--ink-muted); text-decoration: none; }
+.breadcrumbs a:hover { color: var(--ink); text-decoration: underline; }
+
+.breadcrumbs li + li::before {
+  content: "/";
+  margin-right: var(--s-2);
+  color: var(--border-strong);
+}
+
+.grid { display: grid; gap: var(--s-4); }
+.grid-kpi { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.grid-charts { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: start; }
+
+.stack { display: flex; flex-direction: column; gap: var(--s-4); }
+.row { display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; }
+
+/* ---- Responsive ---- */
+
+.sidebar-scrim { display: none; }
+.hamburger { display: none; }
+
+@media (max-width: 1000px) {
+  .grid-charts { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 860px) {
+  .shell,
+  .shell[data-sidebar="collapsed"] { grid-template-columns: minmax(0, 1fr); }
+
+  .hamburger { display: inline-flex; }
+
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 40;
+    width: min(280px, 84vw);
+    transform: translateX(-102%);
+    transition: transform var(--speed) ease;
+    box-shadow: var(--shadow-3);
+  }
+
+  .shell[data-mobile-nav="open"] .sidebar { transform: translateX(0); }
+
+  /* The rail collapse is a desktop affordance; on mobile always show full labels. */
+  .shell[data-sidebar="collapsed"] .nav-text,
+  .shell[data-sidebar="collapsed"] .brand-name,
+  .shell[data-sidebar="collapsed"] .nav-label { display: revert; }
+
+  .shell[data-sidebar="collapsed"] .nav-item,
+  .shell[data-sidebar="collapsed"] .brand { justify-content: flex-start; padding-inline: var(--s-2); }
+
+  .shell[data-mobile-nav="open"] .sidebar-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    background: var(--overlay);
+  }
+
+  .topbar { padding-inline: var(--s-4); }
+  .topbar-search { flex-basis: auto; }
+  .content { padding: var(--s-4); }
+}
+
+@media (max-width: 560px) {
+  .page-head-actions { margin-left: 0; width: 100%; }
+  .page-head-actions .btn { flex: 1 1 auto; justify-content: center; }
+}
