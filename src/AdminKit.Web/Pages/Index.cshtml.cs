@@ -15,7 +15,8 @@ public sealed record Kpi(
     double? Delta,
     string Comparison,
     string Sparkline,
-    bool HigherIsBetter);
+    bool HigherIsBetter,
+    string? Detail = null);
 
 public class IndexModel : PageModel
 {
@@ -70,7 +71,7 @@ public class IndexModel : PageModel
                     current.Count == 0 ? 0 : (double)current.Average(o => o.Amount),
                     previous.Count == 0 ? 0 : (double)previous.Average(o => o.Amount)),
                 "vs. prior 30 days",
-                string.Empty,
+                ChartMath.Sparkline(WeeklyAverage(orders, today), 180, 30),
                 HigherIsBetter: true),
 
             new Kpi(
@@ -81,7 +82,9 @@ public class IndexModel : PageModel
                     ? "nothing is waiting"
                     : $"oldest has waited {oldestWait} day{(oldestWait == 1 ? "" : "s")}",
                 string.Empty,
-                HigherIsBetter: false)
+                HigherIsBetter: false,
+                Detail: $"{open.Count(o => o.Status == OrderStatus.Pending)} pending "
+                      + $"· {open.Count(o => o.Status == OrderStatus.Processing)} processing")
         ];
 
         // Scoped to the same 30 days as the rest of the page. Across all time this
@@ -122,6 +125,17 @@ public class IndexModel : PageModel
         Enumerable.Range(0, 8)
             .Select(i => (decimal)orders.Count(o =>
                 o.PlacedOn > today.AddDays(-7 * (8 - i)) && o.PlacedOn <= today.AddDays(-7 * (7 - i))))
+            .ToList();
+
+    private static List<decimal> WeeklyAverage(IReadOnlyList<Order> orders, DateOnly today) =>
+        Enumerable.Range(0, 8)
+            .Select(i =>
+            {
+                var week = orders
+                    .Where(o => o.PlacedOn > today.AddDays(-7 * (8 - i)) && o.PlacedOn <= today.AddDays(-7 * (7 - i)))
+                    .ToList();
+                return week.Count == 0 ? 0m : week.Average(o => o.Amount);
+            })
             .ToList();
 
     private static List<decimal> WeeklyRevenue(IReadOnlyList<Order> orders, DateOnly today) =>

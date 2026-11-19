@@ -8,7 +8,11 @@ a token file — no Bootstrap, no Tailwind, no component library. The charts are
 inline SVG generated in C# — no charting library. There is no npm install and no
 build step: clone it and press run.
 
-<!-- Screenshots: add docs/dashboard.png and docs/orders.png, then link them here. -->
+![Dashboard](docs/dashboard.png)
+
+| Orders list | Order form | Dark mode |
+|---|---|---|
+| ![Orders](docs/orders.png) | ![Edit order](docs/order-edit.png) | ![Dark mode](docs/dashboard-dark.png) |
 
 ## Run it
 

@@ -102,11 +102,13 @@
     }
     else
     {
+        @* A <caption> styled visually-hidden still reserves a band in Chrome, so the
+           description lives outside the table and is referenced instead. *@
+        <p class="visually-hidden" id="orders-table-desc">
+            Orders, sorted. Column headers are links that change the sort order.
+        </p>
         <div class="table-wrap">
-            <table class="table">
-                <caption class="visually-hidden">
-                    Orders, sorted. Column headers are links that change the sort order.
-                </caption>
+            <table class="table" aria-describedby="orders-table-desc">
                 <thead>
                     <tr>
                         <th scope="col">Reference</th>

@@ -483,3 +483,6 @@ $RECYCLE.BIN/
 
 # Local scratch
 *.user
+
+# Local tooling
+.claude/

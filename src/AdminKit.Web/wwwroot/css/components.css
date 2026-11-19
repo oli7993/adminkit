@@ -347,9 +347,6 @@
 }
 
 .table thead th {
-  position: sticky;
-  top: var(--topbar-h);
-  z-index: 1;
   background: var(--surface-sunken);
   font-size: var(--fs-xs);
   font-weight: 620;
@@ -484,6 +481,19 @@ dialog .card-body { padding: var(--s-5); }
 .chart { position: relative; }
 .chart svg { width: 100%; height: auto; overflow: visible; }
 
+/* A doughnut scaled to the full card width dwarfs everything next to it. */
+.chart-donut { max-width: 300px; margin-inline: auto; }
+
+.kpi-detail {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: var(--s-3);
+  min-height: 34px;
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+
 .chart-axis { font-size: 11px; fill: var(--ink-muted); }
 .chart-grid { stroke: var(--grid); stroke-width: 1; }
 .chart-baseline { stroke: var(--border-strong); stroke-width: 1; }
@@ -546,7 +556,6 @@ dialog .card-body { padding: var(--s-5); }
 .chart-table summary:hover { color: var(--ink); }
 .chart-table .table th,
 .chart-table .table td { padding: var(--s-2) var(--s-3); }
-.chart-table .table thead th { position: static; }
 
 /* ---- Theme / density toggles ---- */
 
